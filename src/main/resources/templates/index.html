@@ -11,27 +11,36 @@
 <div class="container">
     <h1 class="mt-5">Product List</h1>
 
-    <!-- 🔄 관리자 페이지 + Create 버튼 같은 줄 양 끝 정렬 -->
+    <!-- 🔄 상단 버튼 영역 (한 줄 정렬) -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <!-- 🔧 Create 버튼 -->
         <form th:action="@{/products/new}" method="get" style="margin: 0;">
-            <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
-              <button type="submit"
-                      class="btn btn-primary"
-                      th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
+        <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
+            <button type="submit"
+                    class="btn btn-primary"
+                    th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
                 Create New Product
-              </button>
-            </span>
+            </button>
+        </span>
         </form>
 
-        <!-- 👑 관리자 전용 버튼 -->
-        <div sec:authorize="hasRole('ADMIN')">
-            <a class="btn btn-warning" th:href="@{/admin/users}" title="전체 사용자 목록 확인">
-                👑 관리자 페이지
-            </a>
+        <!-- 👑 관리자 버튼 + 로그아웃 버튼 -->
+        <div class="d-flex gap-2">
+            <!-- 관리자 전용 버튼 -->
+            <div sec:authorize="hasRole('ADMIN')">
+                <a class="btn btn-warning" th:href="@{/admin/users}" title="전체 사용자 목록 확인">
+                    👑 관리자 페이지
+                </a>
+            </div>
+
+            <!-- ✅ 로그아웃 버튼: POST 방식 -->
+            <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()" style="margin: 0;">
+                <button type="submit" class="btn btn-outline-secondary" title="로그아웃">🔓 로그아웃</button>
+            </form>
         </div>
     </div>
 
+    <!-- 상품 목록 테이블 -->
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -53,24 +62,24 @@
             <td>
                 <!-- 🔧 Edit 버튼 -->
                 <form th:action="@{'/products/edit/' + ${product.id}}" method="get" style="display:inline;">
-                  <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
-                    <button type="submit"
-                            class="btn btn-primary btn-sm"
-                            th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
-                      Edit
-                    </button>
-                  </span>
+                    <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
+                        <button type="submit"
+                                class="btn btn-primary btn-sm"
+                                th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
+                            Edit
+                        </button>
+                    </span>
                 </form>
 
                 <!-- 🔧 Delete 버튼 -->
                 <form th:action="@{'/products/delete/' + ${product.id}}" method="get" style="display:inline;">
-                  <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
-                    <button type="submit"
-                            class="btn btn-danger btn-sm"
-                            th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
-                      Delete
-                    </button>
-                  </span>
+                    <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
+                        <button type="submit"
+                                class="btn btn-danger btn-sm"
+                                th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
+                            Delete
+                        </button>
+                    </span>
                 </form>
             </td>
         </tr>
