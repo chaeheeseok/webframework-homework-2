@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:insert="~{common :: commonHead}">
   <title>Product Manager</title>
@@ -9,7 +10,17 @@
 <body>
 <div class="container">
   <h1 class="mt-5">Product List</h1>
-  <a class="btn btn-primary mb-3" th:href="@{/products/new}">Create New Product</a>
+
+  <!-- 🔧 Create 버튼 (권한에 따라 비활성화 + 툴팁) -->
+  <form th:action="@{/products/new}" method="get">
+    <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
+      <button type="submit"
+              class="btn btn-primary mb-3"
+              th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
+        Create New Product
+      </button>
+    </span>
+  </form>
 
   <table class="table table-bordered">
     <thead>
@@ -30,8 +41,27 @@
       <td th:text="${product.madeIn}">Made in</td>
       <td th:text="${product.price}">Price</td>
       <td>
-        <a class="btn btn-primary btn-sm" th:href="@{'/products/edit/' + ${product.id}}">Edit</a>
-        <a class="btn btn-danger btn-sm" th:href="@{'/products/delete/' + ${product.id}}">Delete</a>
+        <!-- 🔧 Edit 버튼 -->
+        <form th:action="@{'/products/edit/' + ${product.id}}" method="get" style="display:inline;">
+          <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
+            <button type="submit"
+                    class="btn btn-primary btn-sm"
+                    th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
+              Edit
+            </button>
+          </span>
+        </form>
+
+        <!-- 🔧 Delete 버튼 -->
+        <form th:action="@{'/products/delete/' + ${product.id}}" method="get" style="display:inline;">
+          <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
+            <button type="submit"
+                    class="btn btn-danger btn-sm"
+                    th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
+              Delete
+            </button>
+          </span>
+        </form>
       </td>
     </tr>
     </tbody>
