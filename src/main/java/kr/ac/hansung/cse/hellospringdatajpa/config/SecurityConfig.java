@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/products/delete/**").hasRole("ADMIN") // ✅ 가장 먼저 넣어줘!
                         .requestMatchers(HttpMethod.GET, "/products/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/products/new", "/products/edit/**", "/products/save").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

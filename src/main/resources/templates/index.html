@@ -4,68 +4,78 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:insert="~{common :: commonHead}">
-  <title>Product Manager</title>
+    <title>Product Manager</title>
 </head>
 
 <body>
 <div class="container">
-  <h1 class="mt-5">Product List</h1>
+    <h1 class="mt-5">Product List</h1>
 
-  <!-- 🔧 Create 버튼 (권한에 따라 비활성화 + 툴팁) -->
-  <form th:action="@{/products/new}" method="get">
-    <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
-      <button type="submit"
-              class="btn btn-primary mb-3"
-              th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
-        Create New Product
-      </button>
-    </span>
-  </form>
-
-  <table class="table table-bordered">
-    <thead>
-    <tr>
-      <th>Product ID</th>
-      <th>Name</th>
-      <th>Brand</th>
-      <th>Made In</th>
-      <th>Price</th>
-      <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="product : ${listProducts}">
-      <td th:text="${product.id}">Product ID</td>
-      <td th:text="${product.name}">Name</td>
-      <td th:text="${product.brand}">Brand</td>
-      <td th:text="${product.madeIn}">Made in</td>
-      <td th:text="${product.price}">Price</td>
-      <td>
-        <!-- 🔧 Edit 버튼 -->
-        <form th:action="@{'/products/edit/' + ${product.id}}" method="get" style="display:inline;">
-          <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
-            <button type="submit"
-                    class="btn btn-primary btn-sm"
-                    th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
-              Edit
-            </button>
-          </span>
+    <!-- 🔄 관리자 페이지 + Create 버튼 같은 줄 양 끝 정렬 -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <!-- 🔧 Create 버튼 -->
+        <form th:action="@{/products/new}" method="get" style="margin: 0;">
+            <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
+              <button type="submit"
+                      class="btn btn-primary"
+                      th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
+                Create New Product
+              </button>
+            </span>
         </form>
 
-        <!-- 🔧 Delete 버튼 -->
-        <form th:action="@{'/products/delete/' + ${product.id}}" method="get" style="display:inline;">
-          <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
-            <button type="submit"
-                    class="btn btn-danger btn-sm"
-                    th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
-              Delete
-            </button>
-          </span>
-        </form>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+        <!-- 👑 관리자 전용 버튼 -->
+        <div sec:authorize="hasRole('ADMIN')">
+            <a class="btn btn-warning" th:href="@{/admin/users}" title="전체 사용자 목록 확인">
+                👑 관리자 페이지
+            </a>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Product ID</th>
+            <th>Name</th>
+            <th>Brand</th>
+            <th>Made In</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${listProducts}">
+            <td th:text="${product.id}">Product ID</td>
+            <td th:text="${product.name}">Name</td>
+            <td th:text="${product.brand}">Brand</td>
+            <td th:text="${product.madeIn}">Made in</td>
+            <td th:text="${product.price}">Price</td>
+            <td>
+                <!-- 🔧 Edit 버튼 -->
+                <form th:action="@{'/products/edit/' + ${product.id}}" method="get" style="display:inline;">
+                  <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
+                    <button type="submit"
+                            class="btn btn-primary btn-sm"
+                            th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
+                      Edit
+                    </button>
+                  </span>
+                </form>
+
+                <!-- 🔧 Delete 버튼 -->
+                <form th:action="@{'/products/delete/' + ${product.id}}" method="get" style="display:inline;">
+                  <span th:attr="title=${not #authorization.expression('hasRole(''ADMIN'')')} ? '관리자만 가능합니다' : null">
+                    <button type="submit"
+                            class="btn btn-danger btn-sm"
+                            th:attr="disabled=${not #authorization.expression('hasRole(''ADMIN'')')}">
+                      Delete
+                    </button>
+                  </span>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
 <!-- Bootstrap JS fragment 삽입 -->

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{common :: commonHead}">
+    <title>사용자 목록</title>
+</head>
+<body>
+<div class="container mt-5">
+    <h2>전체 사용자 목록</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Role</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}">1</td>
+            <td th:text="${user.email}">example@hansung.ac.kr</td>
+            <td th:text="${user.role}">ROLE_USER</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div th:insert="~{common :: commonScript}"></div>
+</body>
+</html>
